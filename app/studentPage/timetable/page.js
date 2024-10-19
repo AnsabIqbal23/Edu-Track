@@ -1,31 +1,115 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Upload, FileUp, RefreshCcw } from 'lucide-react'; // Add RefreshCcw icon for Update button
+import * as ExcelJS from 'exceljs';
 import StudentSidebar from "@/components/student/sidebar";
 
-const timetableData = {
-  MONDAY: [
-    { code: 'E-5 CS', name: 'DB BCS-5J', instructor: 'Javeria Farooq', startTime: '08:00 AM', endTime: '08:55 AM' },
-    { code: 'E-5 CS', name: 'DAA BCS-5J', instructor: 'Dr. Fahad Sherwani', startTime: '09:00 AM', endTime: '09:55 AM' },
-    { code: 'E-5 CS', name: 'PDC BCS-5J', instructor: 'Dr. Nausheen Shoaib', startTime: '11:00 AM', endTime: '11:55 AM' },
-    { code: 'E-5 CS', name: 'GT BCS-5J', instructor: 'Abdul Basit', startTime: '12:00 PM', endTime: '12:55 PM' },
-    { code: 'E-5 CS', name: 'SDA BCS-5J', instructor: 'Engr. Abdul Rahman', startTime: '01:00 PM', endTime: '01:55 PM' },
-  ],
-  TUESDAY: [
-    { code: 'E-5 CS', name: 'DAA BCS-5J', instructor: 'Dr. Fahad Sherwani', startTime: '09:00 AM', endTime: '09:55 AM' },
-    { code: 'E-5 CS', name: 'GT BCS-5J', instructor: 'Abdul Basit', startTime: '12:00 PM', endTime: '12:55 PM' },
-  ],
-  WEDNESDAY: [
-    { code: 'E-5 CS', name: 'DAA BCS-5J', instructor: 'Dr. Fahad Sherwani', startTime: '09:00 AM', endTime: '09:55 AM' },
-    { code: 'E-5 CS', name: 'PDC BCS-5J', instructor: 'Dr. Nausheen Shoaib', startTime: '11:00 AM', endTime: '11:55 AM' },
-    { code: 'E-5 CS', name: 'GT BCS-5J', instructor: 'Abdul Basit', startTime: '12:00 PM', endTime: '12:55 PM' },
-  ],
-}
+// Function to process the Excel file
+const processExcelFile = async (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const arrayBuffer = e.target.result;
+      const workbook = new ExcelJS.Workbook();
+      await workbook.xlsx.load(arrayBuffer);
 
-const Timetable = () => {
-  const [activeDay, setActiveDay] = useState('MONDAY')
+      const worksheet = workbook.worksheets[0]; // Assuming first sheet is the timetable
+      const formattedData = {};
+
+      worksheet.eachRow((row, rowIndex) => {
+        if (rowIndex === 1) return; // Skip header row
+
+        const day = row.getCell(1).value?.toUpperCase();  // Assuming 'Day' is in the first column
+        if (!day) return;
+
+        const classData = {
+          code: row.getCell(2).value, // Assuming 'Code' is in the second column
+          name: row.getCell(3).value, // 'Subject' in third
+          instructor: row.getCell(4).value, // 'Instructor' in fourth
+          startTime: row.getCell(5).value, // 'StartTime' in fifth
+          endTime: row.getCell(6).value, // 'EndTime' in sixth
+        };
+
+        if (!formattedData[day]) formattedData[day] = [];
+        formattedData[day].push(classData);
+      });
+
+      resolve(formattedData);
+    };
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+};
+
+export default function Timetable() {
+  const [activeDay, setActiveDay] = useState('MONDAY');
+  const [timetableData, setTimetableData] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState(null);
+
+  // Load saved timetable from local storage if it exists
+  useEffect(() => {
+    const savedTimetable = localStorage.getItem('timetableData');
+    if (savedTimetable) {
+      setTimetableData(JSON.parse(savedTimetable));
+      setUploadedFileName('Previously uploaded file');
+    }
+  }, []);
+
+  // Handle file upload
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setIsUploading(true);
+      try {
+        const data = await processExcelFile(file);
+        setTimetableData(data);
+        setUploadedFileName(file.name);
+        localStorage.setItem('timetableData', JSON.stringify(data));
+      } catch (error) {
+        console.error('Error processing file:', error);
+        alert('Error processing file. Please try again.');
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  };
+
+  // If no timetable data has been uploaded
+  if (!timetableData) {
+    return (
+        <div className="h-screen w-full bg-[#121212] text-gray-200 grid grid-cols-[auto_1fr]">
+          <StudentSidebar />
+          <Card className="bg-gray-900 border-gray-800 p-6 mx-auto my-20">
+            <CardContent className="text-center">
+              <Upload className="mx-auto h-12 w-12 text-gray-400" />
+              <h3 className="mt-2 text-sm font-semibold text-gray-100">Upload your timetable</h3>
+              <p className="mt-1 text-sm text-gray-400">Upload an Excel file (.xlsx) with your timetable information</p>
+              <div className="mt-6">
+                <Label htmlFor="file-upload" className="cursor-pointer bg-purple-600 hover:bg-purple-700 inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md">
+                  <FileUp className="-ml-1 mr-2 h-5 w-5" />
+                  Upload file
+                </Label>
+                <Input
+                    id="file-upload"
+                    name="file-upload"
+                    type="file"
+                    className="sr-only"
+                    accept=".xlsx, .xls"
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+    );
+  }
 
   return (
       <div className="h-screen w-full bg-[#121212] text-gray-200 grid grid-cols-[auto_1fr]">
@@ -36,13 +120,30 @@ const Timetable = () => {
               <CardTitle className="text-white text-center text-2xl">Timetable</CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <Tabs defaultValue="MONDAY" onValueChange={setActiveDay} className="w-full">
+              <div className="flex justify-between mb-4">
+                <h2 className="text-lg text-white">Uploaded File: {uploadedFileName}</h2>
+                <Label htmlFor="update-upload" className="cursor-pointer bg-purple-600 hover:bg-purple-700 inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-md">
+                  <RefreshCcw className="-ml-1 mr-2 h-5 w-5" />
+                  Update Timetable
+                </Label>
+                <Input
+                    id="update-upload"
+                    name="update-upload"
+                    type="file"
+                    className="sr-only"
+                    accept=".xlsx, .xls"
+                    onChange={handleFileUpload}
+                    disabled={isUploading}
+                />
+              </div>
+              <Tabs defaultValue={activeDay} onValueChange={setActiveDay} className="w-full">
                 <TabsList className="grid w-full grid-cols-3 bg-gray-800 mb-4">
                   {Object.keys(timetableData).map((day) => (
                       <TabsTrigger
                           key={day}
                           value={day}
-                          className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-gray-400 py-2">
+                          className="data-[state=active]:bg-purple-600 data-[state=active]:text-white text-gray-400 py-2"
+                      >
                         {day}
                       </TabsTrigger>
                   ))}
@@ -77,5 +178,3 @@ const Timetable = () => {
       </div>
   );
 }
-
-export default Timetable;
