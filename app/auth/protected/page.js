@@ -27,13 +27,13 @@ const ProtectedPage = () => {
 
                 // Redirect logic based on role and status
                 if (role === 'admin') {
-                    await router.push('/adminPage');
+                    await router.push('/adminPage/dashboard');
                 } else if (role === 'teacher') {
-                    await router.push('/teacherPage');
+                    await router.push('/teacherPage/dashboard');
                 } else if (role === 'librarian') {
-                    await router.push('/librarianPage');
+                    await router.push('/librarianPage/dashboard');
                 }else if (role === 'parent') {
-                    await router.push('/parentPage');
+                    await router.push('/parentPage/dashboard');
                 }else if (role === 'student') {
                     if (status === 'pending') {
                         setMessage('Your account is pending approval. Please contact admin for more information.');

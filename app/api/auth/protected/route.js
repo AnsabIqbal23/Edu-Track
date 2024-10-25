@@ -13,10 +13,10 @@ export async function GET(request) {
     // Simulate token verification and fetching user role and status from the backend
     if (token === 'mock-jwt-token') {
         const user = {
-            role: 'student',  // Example role, replace with actual data from your backend
-            status: 'approved'  // Example status
+            // role: 'student',  // Example role, replace with actual data from your backend
+            // status: 'approved'  // Example status
 
-            // role: 'admin',
+            role: 'admin',
             // role: 'parent',
             // role: 'teacher',
             // role: 'librarian',

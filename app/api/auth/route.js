@@ -3,10 +3,10 @@ export async function POST(request) {
 
     // Simulating user authentication (replace with actual logic)
     if (email === 'test@example.com' && password === 'ansab') {
-        const role = 'student';  // For example, role could be 'admin', 'teacher', etc.
-        const status = 'approved';  // Only applicable for students        
+        // const role = 'student';  // For example, role could be 'admin', 'teacher', etc.
+        // const status = 'approved';  // Only applicable for students
 
-        // const role = 'admin';
+        const role = 'admin';
         // const role = 'parent';
         // const role = 'teacher';
         // const role = 'librarian';
