@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 
 // Mock book data
 const mockBooks = [
+    // Data fetch from api
     { id: '1', title: 'To Kill a Mockingbird', author: 'Harper Lee', status: 'Available' },
     { id: '2', title: '1984', author: 'George Orwell', status: 'Checked Out' },
     { id: '3', title: 'Pride and Prejudice', author: 'Jane Austen', status: 'Available' },

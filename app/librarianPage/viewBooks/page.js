@@ -5,6 +5,7 @@ import { SearchForm } from '@/components/ui/searchForm'
 import LibrarianSidebar from '@/components/librarian/sidebar'
 
 async function getBooks() {
+    // Data fetch from api
     return [
         { id: 1, title: 'To Kill a Mockingbird', author: 'Harper Lee', status: 'Available' },
         { id: 2, title: '1984', author: 'George Orwell', status: 'Checked_Out' },

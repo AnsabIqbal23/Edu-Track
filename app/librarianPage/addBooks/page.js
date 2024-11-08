@@ -11,6 +11,7 @@ import LibrarianSidebar from "@/components/librarian/sidebar";
 export default function AddBook() {
     const { register, handleSubmit, formState: { errors }, reset } = useForm({
         defaultValues: {
+            // set default values
             title: "",
             author: "",
             isbn: "",

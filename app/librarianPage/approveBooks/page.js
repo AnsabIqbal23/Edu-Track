@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const initialBooks = [
+    // Data fetch from api
     { id: 1, title: "The Great Gatsby", author: "F. Scott Fitzgerald", status: "pending", date: "2024-10-20", student: "a@gmail.com" },
     { id: 2, title: "To Kill a Mockingbird", author: "Harper Lee", status: "pending", date: "2024-10-21", student: "b@gmail.com" },
     { id: 3, title: "1984", author: "George Orwell", status: "pending", date: "2024-10-22", student: "a@gmail.com" },

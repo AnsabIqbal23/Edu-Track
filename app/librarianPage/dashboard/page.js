@@ -7,6 +7,7 @@ import LibrarianSidebar from "@/components/librarian/sidebar"; // Assuming you h
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const librarianInfo = {
+    // Data fetch from api
     name: "Sarah Lee",
     email: "sarah.lee@example.com",
     phone: "+92 300 7654321",
