@@ -6,10 +6,10 @@ export async function POST(request) {
         // const role = 'student';  // For example, role could be 'admin', 'teacher', etc.
         // const status = 'approved';  // Only applicable for students
 
-        const role = 'admin';
+        // const role = 'admin';
         // const role = 'parent';
         // const role = 'teacher';
-        // const role = 'librarian';
+        const role = 'librarian';
 
         return new Response(
             JSON.stringify({

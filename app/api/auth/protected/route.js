@@ -16,10 +16,10 @@ export async function GET(request) {
             // role: 'student',  // Example role, replace with actual data from your backend
             // status: 'approved'  // Example status
 
-            role: 'admin',
+            // role: 'admin',
             // role: 'parent',
             // role: 'teacher',
-            // role: 'librarian',
+            role: 'librarian',
         };
 
         return new Response(
