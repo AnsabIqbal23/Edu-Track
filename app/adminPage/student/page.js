@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader} from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, X, Users, Search, Filter, RefreshCw } from 'lucide-react';
+import { Check, X, Search, Filter, RefreshCw } from 'lucide-react';
 import AdminSidebar from "@/components/admin/sidebar";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -22,6 +22,10 @@ export default function AdminSignupApproval() {
   const [requests, setRequests] = useState(initialRequests);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  const handleRefresh = () => {
+    setRequests([...initialRequests]); // Reset requests to initial state
+  };
 
   const handleApprove = (id) => {
     setRequests(requests.map(request =>
@@ -108,7 +112,7 @@ export default function AdminSignupApproval() {
                         </SelectContent>
                       </Select>
                     </div>
-                    <Button variant="outline" className="border-gray-600 text-gray-300 hover:text-white">
+                    <Button variant="outline" onClick={handleRefresh} className="border-gray-600 text-gray-300 hover:text-white">
                       <RefreshCw className="h-4 w-4 mr-2" />
                       Refresh
                     </Button>

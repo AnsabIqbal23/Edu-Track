@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { UserPlus, Mail, Key, Tag, Clock, Calendar, GraduationCap, Building2, BookOpen } from "lucide-react";
 import AdminSidebar from "@/components/admin/sidebar";
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardContent} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
